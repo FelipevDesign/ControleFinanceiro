@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro Pessoal</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Tagify CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- ==== Menu Lateral (Mantido) ==== -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                 <h2 class="sidebar-title">Menu</h2>
+                 <button id="sidebar-close-btn" class="sidebar-close" aria-label="Fechar menu"> <i class="fas fa-times"></i> </button>
+                 <button id="sidebar-toggle-desktop-btn" class="sidebar-toggle desktop-toggle" aria-label="Recolher menu"> <i class="fas fa-chevron-left"></i> </button>
+            </div>
+            <nav> <ul id="sidebar-nav"> <li> <button class="sidebar-link" id="open-settings-modal-btn"> <i class="fas fa-cog fa-fw"></i> <span class="link-text">Configurações</span> </button> </li> </ul> </nav>
+        </aside>
+
+        <!-- Overlay para menu mobile (Mantido) -->
+        <div id="mobile-overlay"></div>
+
+        <!-- ==== Conteúdo Principal ==== -->
+        <div id="main-content">
+            <header class="main-header">
+                 <button id="mobile-menu-toggle-btn" class="mobile-menu-toggle" aria-label="Abrir menu"> <i class="fas fa-bars"></i> </button>
+                 <h1>Meu Controle Financeiro</h1>
+            </header>
+
+            <!-- *** ÁREA DE CONTEÚDO REESTRUTURADA *** -->
+            <main class="content-area"> <!-- Removido main-dashboard-grid daqui -->
+
+                <!-- *** NOVO HEADER DO DASHBOARD *** -->
+                <section id="dashboard-header" class="card dashboard-header-card">
+                    <div class="greeting-area">
+                        <span id="greeting-message">Boa noite,</span> <!-- Saudação dinâmica (opcional) -->
+                        <strong>Felipe!</strong> <span class="greeting-emoji">🌙</span> <!-- Nome/Emoji (pode ser dinâmico) -->
+                    </div>
+                    <div class="summary-totals-area">
+                        <div class="summary-total-item">
+                            <span>Receita Mensal</span>
+                            <strong id="header-monthly-income" class="income">R$ 0,00</strong>
+                        </div>
+                         <div class="summary-total-item">
+                            <span>Despesa Mensal</span>
+                            <strong id="header-monthly-expenses" class="expense">R$ 0,00</strong>
+                        </div>
+                        <!-- Ícone de gráfico opcional -->
+                        <!-- <button class="btn-icon-only" aria-label="Ver gráfico resumo"> <i class="fas fa-chart-line"></i> </button> -->
+                    </div>
+                    <div class="quick-actions-area">
+                        <span>Acesso rápido</span>
+                        <div class="quick-action-buttons">
+                            <button id="header-action-despesa" class="quick-action-btn">
+                                <i class="fas fa-minus-circle expense"></i>
+                                <span>DESPESA</span>
+                            </button>
+                            <button id="header-action-receita" class="quick-action-btn">
+                                <i class="fas fa-plus-circle income"></i>
+                                <span>RECEITA</span>
+                            </button>
+                            <button id="header-action-transf" class="quick-action-btn" disabled title="Em breve">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>TRANSF.</span>
+                            </button>
+                             <button id="header-action-importar" class="quick-action-btn" disabled title="Em breve">
+                                <i class="fas fa-link"></i>
+                                <span>IMPORTAR</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <!-- *** FIM NOVO HEADER DO DASHBOARD *** -->
+
+
+                <!-- *** SEÇÕES RESTANTES (sem grid container direto) *** -->
+                <!-- Feedback geral pode ficar aqui ou em outro lugar -->
+                 <div id="feedback-message" class="feedback" style="margin-bottom: 20px;"></div>
+
+                 <!-- Orçamentos e Metas (Podem ser agrupados em um grid se desejado depois) -->
+                 <div class="dashboard-row"> <!-- Wrapper opcional para grid -->
+                     <section id="budget-section" class="card">
+                        <h2>Orçamentos do Mês</h2>
+                        <div id="budget-list"> <p class="placeholder">Defina orçamentos em Configurações.</p> </div>
+                    </section>
+
+                    <section id="goals-section" class="card">
+                        <h2>Minhas Metas</h2>
+                        <div id="goal-list-display"> <p class="placeholder">Crie metas nas Configurações.</p> </div>
+                    </section>
+                 </div>
+
+                 <!-- Recorrências Pendentes -->
+                 <section id="pending-recurring-section" class="card hidden">
+                    <h2><i class="fas fa-history icon"></i> Recorrências Pendentes</h2>
+                    <ul id="pending-recurring-list"> <li class="placeholder">Nenhuma recorrência pendente este mês.</li> </ul>
+                    <div id="recurring-feedback" class="feedback"></div>
+                </section>
+
+                <!-- Relatórios -->
+                <section id="reports" class="card">
+                     <h2>Relatórios Visuais</h2>
+                     <div class="report-period-selector"> <label for="report-period-picker">Período Relatórios:</label> <input type="text" id="report-period-picker" placeholder="Selecione o período..."> </div>
+                     <div class="individual-charts-container"> <div class="chart-wrapper"> <h3>Gastos por Categoria (Período)</h3> <div id="category-apex-chart"></div> <p id="no-category-chart-data" class="placeholder hidden">Sem dados suficientes.</p> </div> <div class="chart-wrapper"> <h3>Evolução do Saldo (Período)</h3> <div id="balance-evolution-apex-chart"></div> <p id="no-balance-chart-data" class="placeholder hidden">Dados insuficientes.</p> </div> </div>
+                     <div id="comparison-report-panel" class="report-panel card"> <button class="report-panel-toggle" id="comparison-toggle-btn" aria-expanded="false" aria-controls="comparison-content"> <h3>Análise Comparativa por Categoria</h3> <i class="fas fa-chevron-down toggle-icon"></i> </button> <div id="comparison-content" class="report-panel-content" hidden> <div class="comparison-controls"> <div class="form-group"> <label for="comparison-period-select">Comparar Período:</label> <select id="comparison-period-select"> <option value="month-vs-last">Mês Atual vs Mês Anterior</option> <option value="year-vs-last">Ano Atual vs Ano Anterior</option> <option value="quarter-vs-last">Trimestre Atual vs Trim. Anterior</option> <option value="month-vs-last-year">Mês Atual vs Mesmo Mês Ano Ant.</option> <option value="ytd-vs-last">Ano Atual (YTD) vs Ano Anterior (YTD)</option> </select> </div> <div class="form-group"> <label for="comparison-type">Tipo de Dado:</label> <select id="comparison-type"> <option value="expense" selected>Despesas</option> <option value="income">Receitas</option> </select> </div> </div> <div id="comparison-results"> <div id="comparison-apex-chart"></div> <p id="no-comparison-data" class="placeholder hidden">Sem dados para comparar.</p> </div> </div> </div>
+                 </section>
+
+                 <!-- Extrato Financeiro -->
+                <section id="transactions-section" class="card">
+                    <h2>Extrato Financeiro</h2>
+                    <div class="filters"> <div class="filter-group date-filter-group"> <div class="form-group filter-item"> <label for="filter-start-date">De:</label> <input type="date" id="filter-start-date"> </div> <div class="form-group filter-item"> <label for="filter-end-date">Até:</label> <input type="date" id="filter-end-date"> </div> </div> <div class="filter-shortcuts"> <button class="btn btn-secondary btn-sm shortcut-btn" data-period="current-month">Este Mês</button> <button class="btn btn-secondary btn-sm shortcut-btn" data-period="last-month">Mês Passado</button> <button class="btn btn-secondary btn-sm shortcut-btn" data-period="all" id="clear-period-btn">Ver Tudo</button> </div> <div class="form-group filter-item category-filter-item"> <label for="filter-category">Categoria:</label> <select id="filter-category"><option value="all">Todas</option></select> </div> <div class="form-group filter-item search-filter"> <label for="search-input">Buscar:</label> <div class="search-wrapper"> <i class="fas fa-search search-icon"></i> <input type="search" id="search-input" placeholder="Descrição, Fonte ou Tag..."> </div> </div> </div>
+                    <ul id="transaction-list"> <li class="transaction-item placeholder">Nenhuma transação encontrada.</li> </ul>
+                </section>
+
+            </main>
+
+            <footer class="main-footer"> <p>© 2024 Controle Financeiro.</p> </footer>
+        </div>
+    </div>
+
+    <!-- ==== Modais ==== -->
+
+    <!-- Modal Registro Rápido -->
+    <div id="quick-add-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+             <!-- *** ADICIONADO BOTÃO DE FECHAR 'X' *** -->
+             <button class="modal-close-btn" id="close-quick-add-modal-btn" aria-label="Fechar"><i class="fas fa-times"></i></button>
+            <h2 id="quick-add-modal-title">Registrar Nova Transação</h2>
+            <form id="quick-add-form">
+                <input type="hidden" id="quick-add-type" value="expense">
+                <div class="form-group"> <label for="quick-add-date">Data:</label> <input type="date" id="quick-add-date" required> </div>
+                <div class="form-group"> <label for="quick-add-description-source" id="quick-add-desc-src-label">Descrição:</label> <input type="text" id="quick-add-description-source" placeholder="Ex: Supermercado, Salário..." required> </div>
+                <div class="form-group"> <label for="quick-add-amount">Valor:</label> <input type="text" inputmode="decimal" id="quick-add-amount" placeholder="R$ 0,00" required> </div>
+                <div class="form-group" id="quick-add-category-group"> <label for="quick-add-category">Categoria:</label> <select id="quick-add-category"> <option value="" disabled selected>Selecione...</option> </select> </div>
+                 <div class="form-group"> <label for="quick-add-tags">Tags (Opcional):</label> <input type="text" id="quick-add-tags" placeholder="Adicione tags..."> </div>
+                 <div class="modal-actions"> <button type="submit" class="btn btn-primary" id="quick-add-submit-btn">Adicionar</button> <button type="button" class="btn btn-secondary cancel-quick-add-btn">Cancelar</button> </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Transação (Mantido) -->
+    <div id="edit-modal" class="modal"> <div class="modal-overlay"></div> <div class="modal-content"> <button class="modal-close-btn" aria-label="Fechar"><i class="fas fa-times"></i></button> <h2>Editar Transação</h2> <form id="edit-transaction-form"> <input type="hidden" id="edit-transaction-id"> <input type="hidden" id="edit-transaction-type"> <div class="form-group"> <label for="edit-date">Data:</label> <input type="date" id="edit-date" required> </div> <div class="form-group"> <label for="edit-description-source">Descrição/Fonte:</label> <input type="text" id="edit-description-source" required> </div> <div class="form-group"> <label for="edit-amount">Valor:</label> <input type="text" inputmode="decimal" id="edit-amount" required> </div> <div class="form-group"> <label for="edit-category">Categoria:</label> <select id="edit-category"> </select> </div> <div class="form-group"> <label for="edit-tags">Tags:</label> <input type="text" id="edit-tags" placeholder="Adicione tags..."> </div> <div class="modal-actions"> <button type="submit" class="btn btn-primary save-edit-btn">Salvar</button> <button type="button" class="btn btn-secondary cancel-edit-btn">Cancelar</button> </div> </form> </div> </div>
+
+    <!-- Modal Configurações (Mantido) -->
+    <div id="settings-modal" class="modal settings-modal-container"> <div class="modal-overlay"></div> <div class="modal-content settings-modal-content"> <button class="modal-close-btn" id="close-settings-modal-btn" aria-label="Fechar"><i class="fas fa-times"></i></button> <div class="settings-modal-header"> <button id="settings-back-btn" class="settings-back-button hidden" aria-label="Voltar"><i class="fas fa-chevron-left"></i></button> <h2 id="settings-modal-title">Configurações</h2> </div> <div id="settings-section-list" class="settings-section-list-container hidden"> <p class="placeholder">Carregando seções...</p> </div> <div class="modal-tabs"> <button class="tab-button active" data-tab="tab-budgets"><i class="fas fa-piggy-bank"></i> Orçamentos</button> <button class="tab-button" data-tab="tab-categories"><i class="fas fa-tags"></i> Categorias</button> <button class="tab-button" data-tab="tab-tags"><i class="fas fa-hashtag"></i> Tags</button> <button class="tab-button" data-tab="tab-goals"><i class="fas fa-bullseye"></i> Metas</button> <button class="tab-button" data-tab="tab-recurring"><i class="fas fa-redo-alt"></i> Recorrências</button> <button class="tab-button" data-tab="tab-export"><i class="fas fa-download"></i> Exportar</button> </div> <div class="tab-content-container"> <div class="tab-content active" id="tab-budgets"> <h3>Orçamentos Mensais</h3> <form id="budget-form"> <div id="budget-categories-list"> <p class="placeholder">Carregando...</p> </div> <button type="submit" id="save-budgets-btn" class="btn btn-income save-budgets-button"><i class="fas fa-save"></i> Salvar Orçamentos</button> </form> <div id="budget-feedback" class="feedback"></div> </div> <div class="tab-content" id="tab-categories"> <h3>Gerenciar Categorias</h3> <div class="category-management"> <input type="text" id="new-category-name" placeholder="Nome..."> <select id="new-category-type"> <option value="expense">Despesa</option> <option value="income">Receita</option> </select> <button id="add-category-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button> </div> <h4>Despesas</h4> <ul id="expense-category-list" class="category-list"></ul> <h4>Receitas</h4> <ul id="income-category-list" class="category-list"></ul> <small>Padrão não pode ser removido.</small> </div> <div class="tab-content" id="tab-tags"> <h3>Gerenciar Tags</h3> <form id="add-tag-form" class="tag-management"> <input type="text" id="new-tag-name" placeholder="Nova tag..."> <button type="submit" id="add-tag-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Tag</button> </form> <hr class="separator"> <h4>Tags Existentes:</h4> <ul id="tag-management-list" class="tag-list"> <li class="placeholder">Nenhuma tag cadastrada.</li> </ul> <div id="tag-feedback" class="feedback"></div> </div> <div class="tab-content" id="tab-goals"> <h3>Metas de Economia</h3> <form id="add-goal-form" class="goal-form"> <div class="form-group"> <label for="goal-name">Nome da Meta:</label> <input type="text" id="goal-name" placeholder="Ex: Viagem, Reserva" required> </div> <div class="form-group"> <label for="goal-target-amount">Valor Alvo:</label> <input type="text" inputmode="decimal" id="goal-target-amount" placeholder="R$ 1000,00" required> </div> <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Adicionar Meta</button> </form> <hr class="separator"> <h4>Metas Atuais:</h4> <ul id="goal-management-list" class="goal-list"> <li class="placeholder">Nenhuma meta cadastrada.</li> </ul> <div id="goal-feedback" class="feedback"></div> </div> <div class="tab-content" id="tab-recurring"> <h3>Lançamentos Recorrentes</h3> <form id="add-recurring-form" class="recurring-form"> <div class="form-row"> <div class="form-group"> <label for="recurring-type">Tipo:</label> <select id="recurring-type" required> <option value="expense">Despesa</option> <option value="income">Receita</option> </select> </div> <div class="form-group"> <label for="recurring-day">Dia do Mês:</label> <input type="number" id="recurring-day" min="1" max="31" placeholder="Ex: 5" required> </div> </div> <div class="form-group"> <label for="recurring-description">Descrição/Fonte:</label> <input type="text" id="recurring-description" placeholder="Ex: Aluguel, Salário" required> </div> <div class="form-row"> <div class="form-group"> <label for="recurring-amount">Valor Padrão:</label> <input type="text" inputmode="decimal" id="recurring-amount" placeholder="R$ 1500,00" required> </div> <div class="form-group"> <label for="recurring-category">Categoria:</label> <select id="recurring-category" required> <option value="" disabled selected>Selecione o tipo...</option> </select> </div> </div> <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Adicionar Recorrência</button> </form> <hr class="separator"> <h4>Recorrências Cadastradas:</h4> <ul id="recurring-management-list" class="recurring-list"> <li class="placeholder">Nenhum lançamento recorrente cadastrado.</li> </ul> <div id="recurring-settings-feedback" class="feedback"></div> </div> <div class="tab-content" id="tab-export"> <h3>Exportar Dados</h3> <p>Backup das transações em CSV.</p> <button id="export-csv-btn" class="btn btn-primary export-button-modal"><i class="fas fa-file-csv"></i> Exportar CSV</button> </div> </div> </div> </div>
+
+     <!-- Modal Editar Recorrência (Mantido) -->
+    <div id="edit-recurring-modal" class="modal"> <div class="modal-overlay"></div> <div class="modal-content"> <button class="modal-close-btn" aria-label="Fechar"><i class="fas fa-times"></i></button> <h2>Editar Recorrência</h2> <form id="edit-recurring-form"> <input type="hidden" id="edit-recurring-id"> <div class="form-row"> <div class="form-group"> <label for="edit-recurring-type">Tipo:</label> <select id="edit-recurring-type" required> <option value="expense">Despesa</option> <option value="income">Receita</option> </select> </div> <div class="form-group"> <label for="edit-recurring-day">Dia do Mês:</label> <input type="number" id="edit-recurring-day" min="1" max="31" required> </div > </div> <div class="form-group"> <label for="edit-recurring-description">Descrição/Fonte:</label> <input type="text" id="edit-recurring-description" required> </div> <div class="form-row"> <div class="form-group"> <label for="edit-recurring-amount">Valor Padrão:</label> <input type="text" inputmode="decimal" id="edit-recurring-amount" required> </div> <div class="form-group"> <label for="edit-recurring-category">Categoria:</label> <select id="edit-recurring-category" required> </select> </div> </div> <div class="modal-actions"> <button type="submit" class="btn btn-primary save-edit-recurring-btn">Salvar Alterações</button> <button type="button" class="btn btn-secondary cancel-edit-recurring-btn">Cancelar</button> </div> </form> </div> </div>
+
+    <!-- Scripts (Mantidos) -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <script src="https://unpkg.com/imask"></script>
+    <script src="main.js" type="module"></script>
+</body>
+</html>
