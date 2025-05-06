@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Runner - Controle Financeiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.2.2/mocha.min.css">
+    <style>#mocha { margin: 0 auto; max-width: 960px; }</style>
+</head>
+<body>
+    <div id="mocha"></div>
+
+    <!-- 1. Carrega Bibliotecas Externas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.2.2/mocha.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.6/chai.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sinon.js/14.0.0/sinon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/imask"></script>
+
+    <!-- 2. Configura Mocha e Chai -->
+    <script class="mocha-init">
+        mocha.setup('bdd');
+        window.expect = chai.expect;
+    </script>
+
+    <!-- 3. Carrega SEUS Módulos JS (Dependências primeiro!) -->
+    <script src="../supabaseClient.js" type="module"></script>
+    <script src="../helpers.js" type="module"></script>
+    <script src="../data.js" type="module"></script>
+    <script src="../recurring.js" type="module"></script>
+    <!-- Carrega charts.js pois ele será testado e depende de helpers.js -->
+    <script src="../charts.js" type="module"></script>
+    <!-- Adicione outros módulos se necessário -->
+
+    <!-- 4. Carrega e Executa os Módulos de Teste -->
+    <script type="module">
+        import './helpers.test.js';
+        import './data.test.js';
+        import './charts.test.js';
+        import './recurring.test.js'; // <-- Adiciona este
+
+        mocha.run();
+        console.log("Mocha execution requested after ALL test modules import.");
+    </script>
+
+</body>
+</html>
